@@ -28,7 +28,7 @@
     </style>
 </head>
 <body>
-    
+
     <div class="container">
         <div class="currency-container">
             <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/ethereum.png"></img> Etherium</h1>
@@ -40,6 +40,12 @@
             <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/golem-network-tokens.png"></img> Golem</h1>
             <h2 id="golem-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
             <input id="golem-val" type="hidden" />
+        </div>
+
+        <div class="currency-container">
+            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/stratis.png"></img> Stratis</h1>
+            <h2 id="stratis-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
+            <input id="stratis-val" type="hidden" />
         </div>
     </div>
 
@@ -73,15 +79,16 @@
         };
 
         var updateTitle = function() {
-            document.title = $('#golem-val').val() + '|' + $('#etherium-val').val();
+            document.title = $('#golem-val').val() + '|' + $('#stratis-val').val() + '|' + $('#etherium-val').val();
         };
 
         var retrieveCurrencies = function() {
                 $.get('https://api.coinmarketcap.com/v1/ticker/ethereum/', cb('etherium'));
                 $.get('https://api.coinmarketcap.com/v1/ticker/golem-network-tokens/', cb('golem'));
+                $.get('https://api.coinmarketcap.com/v1/ticker/stratis/', cb('stratis'));
             };
 
-        $(function() {            
+        $(function() {
             timeout = setTimeout(function() {
                 window.location.reload();
             }, refreshRate * 1000);
