@@ -1,0 +1,128 @@
+<html>
+<head>
+    <title>Crypto Currencies</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Verdana;
+            color: white;
+            background-color: #111;
+        }
+        .good {
+            color: green;
+        }
+
+        .bad {
+            color: red;
+        }
+        .currency-container {
+            background: #222;
+            padding: 30px;
+            margin-top: 20px;
+        }
+        .currency-container h1 {
+            padding: 10px;
+        }
+        .control-panel {
+            background-color: #333;
+            margin: 30px 10px;
+            padding: 10px 20px;
+            width: 300px;
+        }
+        .refresh-rate {
+            width: 50px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="currency-container">
+            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/ethereum.png"></img> Etherium</h1>
+            <h2 id="etherium-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
+            <input id="etherium-val" type="hidden" />
+        </div>
+
+        <div class="currency-container">
+            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/golem-network-tokens.png"></img> Golem</h1>
+            <h2 id="golem-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
+            <input id="golem-val" type="hidden" />
+        </div>
+
+        <div class="control-panel">
+            <label for="refresh-rate">Refresh every </label> <input id="refresh-rate" name="refresh-rate" class="refresh-rate" /> seconds
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var refreshRate = 10;
+        var refreshRateEl;
+        var interval;
+
+        var cb = function(id) {
+            return function(data) {
+                var display = $(`#${id}-display`);
+                var val = $(`#${id}-val`);
+                var priceUsd = display.find('.price-usd');
+                var percentChange24h = display.find('.percent-change-24h');
+
+                priceUsd.text(data[0].price_usd);
+                percentChange24h.text(data[0].percent_change_24h);
+
+                if (data[0].percent_change_24h > 0) {
+                    percentChange24h.removeClass();
+                    percentChange24h.addClass('good');
+                } else {
+                    percentChange24h.removeClass();
+                    percentChange24h.addClass('bad');
+                }
+
+                val.val(data[0].price_usd);
+
+                updateTitle();
+            };
+        };
+
+        var updateTitle = function() {
+            document.title = $('#golem-val').val() + '|' + $('#etherium-val').val();
+        };
+
+        var start = function() {
+                $.get('https://api.coinmarketcap.com/v1/ticker/ethereum/', cb('etherium'));
+                $.get('https://api.coinmarketcap.com/v1/ticker/golem-network-tokens/', cb('golem'));
+            };
+
+        var updateRefreshRate = function(evt) {
+            var refreshVal = refreshRateEl.val();
+            
+            if (/^\d+$/.test(refreshVal)) {
+                refreshRate = +(refreshRateEl.val());
+                if (interval) {
+                    clearInterval(interval);
+                }
+                interval = setInterval(start, refreshRate * 1000);
+            } else {
+                refreshRateEl = refreshRate;
+                alert('Please enter a number');
+            }
+        };
+
+        var setUpRefreshRate = function() {
+            refreshRateEl = $('#refresh-rate');
+            refreshRateEl.val(refreshRate);
+            refreshRateEl.change(updateRefreshRate);
+            refreshRateEl.focus();
+            refreshRateEl.select();
+        };
+
+        $(function() {
+            setUpRefreshRate();
+            updateRefreshRate();
+            start();
+        });
+    </script>
+</body>
+</html>
