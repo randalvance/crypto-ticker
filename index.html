@@ -47,6 +47,18 @@
             <h2 id="stratis-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
             <input id="stratis-val" type="hidden" />
         </div>
+
+        <div class="currency-container">
+            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/digibyte.png"></img> Digibyte</h1>
+            <h2 id="digibyte-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
+            <input id="digibyte-val" type="hidden" />
+        </div>
+
+        <div class="currency-container">
+            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/burst.png"></img> Burst</h1>
+            <h2 id="burst-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
+            <input id="burst-val" type="hidden" />
+        </div>
     </div>
 
     <script type="text/javascript">
@@ -86,6 +98,8 @@
                 $.get('https://api.coinmarketcap.com/v1/ticker/ethereum/', cb('etherium'));
                 $.get('https://api.coinmarketcap.com/v1/ticker/golem-network-tokens/', cb('golem'));
                 $.get('https://api.coinmarketcap.com/v1/ticker/stratis/', cb('stratis'));
+                $.get('https://api.coinmarketcap.com/v1/ticker/digibyte/', cb('digibyte'));
+                $.get('https://api.coinmarketcap.com/v1/ticker/burst/', cb('burst'));
             };
 
         $(function() {
