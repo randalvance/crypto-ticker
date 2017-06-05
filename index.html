@@ -1,114 +1,143 @@
 <html>
-<head>
-    <title>Crypto Currencies</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <style>
-        body {
-            font-family: Verdana;
-            color: white;
-            background-color: #111;
-        }
-        .good {
-            color: green;
-        }
 
-        .bad {
-            color: red;
-        }
-        .currency-container {
-            background: #222;
-            padding: 30px;
-            margin-top: 20px;
-        }
-        .currency-container h1 {
-            padding: 10px;
-        }
-    </style>
+<head>
+  <title>Crypto Currencies</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.0/vue.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+    crossorigin="anonymous">
+  <style>
+    body {
+      font-family: Verdana;
+      color: white;
+      background-color: #111;
+    }
+
+    .good {
+      color: green;
+    }
+
+    .bad {
+      color: red;
+    }
+
+    .currency-container {
+      background: #222;
+      padding: 30px;
+      margin-top: 20px;
+    }
+
+    .currency-container h1 {
+      padding: 10px;
+    }
+  </style>
 </head>
+
 <body>
 
-    <div class="container">
-        <div class="currency-container">
-            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/ethereum.png"></img> Etherium</h1>
-            <h2 id="etherium-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
-            <input id="etherium-val" type="hidden" />
-        </div>
-
-        <div class="currency-container">
-            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/golem-network-tokens.png"></img> Golem</h1>
-            <h2 id="golem-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
-            <input id="golem-val" type="hidden" />
-        </div>
-
-        <div class="currency-container">
-            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/stratis.png"></img> Stratis</h1>
-            <h2 id="stratis-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
-            <input id="stratis-val" type="hidden" />
-        </div>
-
-        <div class="currency-container">
-            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/digibyte.png"></img> Digibyte</h1>
-            <h2 id="digibyte-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
-            <input id="digibyte-val" type="hidden" />
-        </div>
-
-        <div class="currency-container">
-            <h1><img src="https://files.coinmarketcap.com/static/img/coins/32x32/burst.png"></img> Burst</h1>
-            <h2 id="burst-display">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
-            <input id="burst-val" type="hidden" />
-        </div>
+  <div class="container">
+    <div id="app">
+      <div v-for="currency in currencies" class="currency-container">
+        <h1><img v-bind:src="currency.logoUrl"></img> {{currency.displayName}}</h1>
+        <h2 v-bind:id="`${currency.id}-display`">$<span class="price-usd">0</span> (<span class="percent-change-24h">0</span>%)</h2>
+        <input v-bind:id="`${currency.id}-val`" type="hidden" />
+      </div>
     </div>
+  </div>
 
-    <script type="text/javascript">
-        var refreshRate = 10 /* seconds */,
-            refreshRateEl,
-            timeout;
+  <script type="text/javascript">
+    var availableCurrencies = [
+      {
+        displayName: 'Ethereum',
+        id: 'ethereum',
+        tickerApiUrl: 'https://api.coinmarketcap.com/v1/ticker/ethereum/',
+        logoUrl: 'https://files.coinmarketcap.com/static/img/coins/32x32/ethereum.png'
+      },
+      {
+        displayName: 'Golem',
+        id: 'golem',
+        tickerApiUrl: 'https://api.coinmarketcap.com/v1/ticker/golem-network-tokens/',
+        logoUrl: 'https://files.coinmarketcap.com/static/img/coins/32x32/golem-network-tokens.png'
+      },
+      {
+        displayName: 'Stratis',
+        id: 'stratis',
+        tickerApiUrl: 'https://api.coinmarketcap.com/v1/ticker/stratis/',
+        logoUrl: 'https://files.coinmarketcap.com/static/img/coins/32x32/stratis.png'
+      },
+      {
+        displayName: 'DigiByte',
+        id: 'digibyte',
+        tickerApiUrl: 'https://api.coinmarketcap.com/v1/ticker/digibyte/',
+        logoUrl: 'https://files.coinmarketcap.com/static/img/coins/32x32/digibyte.png'
+      },
+      {
+        displayName: 'Siacoin',
+        id: 'siacoin',
+        tickerApiUrl: 'https://api.coinmarketcap.com/v1/ticker/siacoin/',
+        logoUrl: 'https://files.coinmarketcap.com/static/img/coins/32x32/siacoin.png'
+      },
+      {
+        displayName: 'Bytecoin',
+        id: 'bytecoin-bcn',
+        tickerApiUrl: 'https://api.coinmarketcap.com/v1/ticker/bytecoin-bcn/',
+        logoUrl: 'https://files.coinmarketcap.com/static/img/coins/32x32/bytecoin-bcn.png'
+      }
+    ];
 
-        var cb = function(id) {
-            return function(data) {
-                var display = $(`#${id}-display`);
-                var val = $(`#${id}-val`);
-                var priceUsd = display.find('.price-usd');
-                var percentChange24h = display.find('.percent-change-24h');
+    var app = new Vue({
+      el: '#app',
+      data: {
+        currencies: availableCurrencies
+      }
+    })
 
-                priceUsd.text(data[0].price_usd);
-                percentChange24h.text(data[0].percent_change_24h);
+    var refreshRate = 10 /* seconds */,
+      refreshRateEl,
+      timeout;
 
-                if (data[0].percent_change_24h > 0) {
-                    percentChange24h.removeClass();
-                    percentChange24h.addClass('good');
-                } else {
-                    percentChange24h.removeClass();
-                    percentChange24h.addClass('bad');
-                }
+    var cb = function (id) {
+      return function (data) {
+        var display = $(`#${id}-display`);
+        var val = $(`#${id}-val`);
+        var priceUsd = display.find('.price-usd');
+        var percentChange24h = display.find('.percent-change-24h');
 
-                val.val(data[0].price_usd);
+        priceUsd.text(data[0].price_usd);
+        percentChange24h.text(data[0].percent_change_24h);
 
-                updateTitle();
-            };
-        };
+        if (data[0].percent_change_24h > 0) {
+          percentChange24h.toggleClass('good');
+        } else {
+          percentChange24h.toggleClass('bad');
+        }
 
-        var updateTitle = function() {
-            document.title = $('#golem-val').val() + '|' + $('#etherium-val').val();
-        };
+        val.val(data[0].price_usd);
 
-        var retrieveCurrencies = function() {
-                $.get('https://api.coinmarketcap.com/v1/ticker/ethereum/', cb('etherium'));
-                $.get('https://api.coinmarketcap.com/v1/ticker/golem-network-tokens/', cb('golem'));
-                $.get('https://api.coinmarketcap.com/v1/ticker/stratis/', cb('stratis'));
-                $.get('https://api.coinmarketcap.com/v1/ticker/digibyte/', cb('digibyte'));
-                $.get('https://api.coinmarketcap.com/v1/ticker/burst/', cb('burst'));
-            };
+        updateTitle();
+      };
+    };
 
-        $(function() {
-            timeout = setTimeout(function() {
-                window.location.reload();
-            }, refreshRate * 1000);
+    var updateTitle = function () {
+      document.title = $('#digibyte-display .percent-change-24h').html();
+    };
 
-            retrieveCurrencies();
-        });
-    </script>
+    var retrieveCurrencies = function () {
+      availableCurrencies.forEach(function (curr) {
+        $.get(curr.tickerApiUrl, cb(curr.id));
+      });
+    };
+
+    $(function () {
+      timeout = setTimeout(function () {
+        window.location.reload();
+      }, refreshRate * 1000);
+
+      retrieveCurrencies();
+    });
+  </script>
 </body>
+
 </html>
